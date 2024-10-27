@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import { useRegister } from "../services/mutations";
 
+import { useLocation } from "react-router-dom";
 function RegistrationPage() {
+  const { state } = useLocation();
+
   const [form, setForm] = useState({
-    username: "",
-    password: "",
+    username: state.form?.username || "",
+    password: state.form?.password || "",
     confirmPassword: "",
   });
 
