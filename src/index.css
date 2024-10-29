@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.myShadow {
+  text-shadow: -11px 9px 9px rgba(159, 161, 164, 0.5);
+}
+.myShadow404 {
+  text-shadow: -7px 5px 5px rgba(49, 58, 64, 0.5);
+}
+.myGrid14 {
+  grid-template-columns: repeat(14, minmax(0, 1fr));
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
