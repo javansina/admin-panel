@@ -1,21 +1,14 @@
-import { useDeleteProducts } from "../../services/mutations";
+import { useDeleteProduct } from "../../services/mutations";
 
 // eslint-disable-next-line react/prop-types
 function DeleteProductModal({ productDeleteModal, setProductDeleteModal }) {
-  const { mutate } = useDeleteProducts();
+  const { mutate } = useDeleteProduct();
 
   const deleteHandler = () => {
-    const id = {
-      ids: [productDeleteModal[1]],
-    };
-    console.log(id);
-    mutate(
-      { id },
-      {
-        onSuccess: (data) => console.log(data),
-        onError: (error) => console.log(error),
-      }
-    );
+    mutate(productDeleteModal[1], {
+      onSuccess: (data) => console.log(data),
+      onError: (error) => console.log(error),
+    });
     setProductDeleteModal([false, null]);
     document.body.style.overflow = "auto";
   };
@@ -42,7 +35,10 @@ function DeleteProductModal({ productDeleteModal, setProductDeleteModal }) {
             </button>
             <button
               className="bg-[#DFDFDF] hover:bg-[#DFDFDF]/70 transition-colors delay-75 w-full rounded-xl h-[41px] font-semibold text-[16px]"
-              onClick={() => setProductDeleteModal([false, null])}
+              onClick={() => {
+                setProductDeleteModal([false, null]);
+                document.body.style.overflow = "auto";
+              }}
             >
               لغو
             </button>

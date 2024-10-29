@@ -8,7 +8,6 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 function RegistrationPage() {
   const [passwordType, setPasswordType] = useState([true, true]);
   const { state } = useLocation();
-  console.log(state);
 
   const [form, setForm] = useState({
     username: state?.form.username || "",
@@ -55,12 +54,12 @@ function RegistrationPage() {
               alt="BotoStart"
             />
             <h2 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-              فرم ورود
+              فرم ثبت نام
             </h2>
           </div>
 
           <div className="flex flex-col mt-10 sm:mx-auto sm:w-full sm:max-w-sm gap-y-5">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={registerHandler}>
               <div className="flex flex-col justify-center">
                 <div className="mt-2">
                   <input
@@ -110,8 +109,9 @@ function RegistrationPage() {
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
+                    onChange={changeHandler}
                     type={passwordType[1] ? "password" : "text"}
-                    required
+                    value={form.confirmPassword}
                     placeholder="تکرار رمز عبور"
                     className="block w-full pr-3 pl-10 h-12 bg-[#f2f2f2] rounded-xl border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-[#282828]/50 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                   />

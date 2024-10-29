@@ -26,10 +26,22 @@ export const useCreateProducts = () => {
   return useMutation({ mutationFn, onSuccess });
 };
 
-export const useDeleteProducts = () => {
+export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
 
-  const mutationFn = (data) => api.delete("products", data);
+  const mutationFn = (id) => api.delete(`products/${id}`);
+
+  const onSuccess = async () => {
+    await queryClient.invalidateQueries({ queryKey: ["all-products"] });
+  };
+
+  return useMutation({ mutationFn, onSuccess });
+};
+
+export const usePutProduct = (id) => {
+  const queryClient = useQueryClient();
+
+  const mutationFn = (data) => api.put(`products/${id}`, data);
 
   const onSuccess = async () => {
     await queryClient.invalidateQueries({ queryKey: ["all-products"] });

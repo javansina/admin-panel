@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.pageNum {
+  @apply pt-0.5 border-2 border-[#8D8D8D80] rounded-[50%] text-center text-[#8D8D8D80];
+}
+.pageNumAction {
+  @apply pt-1 bg-[#55A3F0] rounded-[50%] text-center text-white;
+}
 .myShadow {
   text-shadow: -11px 9px 9px rgba(159, 161, 164, 0.5);
 }

@@ -7,3 +7,12 @@ export const useGetAllProducts = (page = 1) => {
 
   return useQuery({ queryKey, queryFn });
 };
+
+export const useGetProductById = (id) => {
+  const queryFn = () => api.get(`/products/${id}`);
+  const queryKey = [`products/${id}`];
+  return useQuery({
+    queryKey,
+    queryFn,
+  });
+};

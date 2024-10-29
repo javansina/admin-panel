@@ -3,29 +3,40 @@ import { useState } from "react";
 import { useGetAllProducts } from "../services/queries";
 import AddProductModal from "../components/modalComponents/AddProductModal";
 import DeleteProductModal from "../components/modalComponents/DeleteProductModal";
-import { getCookie } from "../utils/cookie";
+import EditProductModal from "../components/modalComponents/EditProductModal";
+import ProductCard from "../components/ProductCard";
 
 function ProductsPage() {
   const [addModal, setAddModal] = useState(false);
   const [productDeleteModal, setProductDeleteModal] = useState([false, null]);
+  const [edit, setEdit] = useState([false, ""]);
+  const [showMessage, setShowMessage] = useState("");
+  const [search, setSearch] = useState([]);
+  const [page, setPage] = useState(1);
+  const { data } = useGetAllProducts(page);
 
-  console.log(getCookie("token"));
-
-  const { data, isLoading, isError } = useGetAllProducts();
-
+  const searchHandler = (e) => {
+    setShowMessage("");
+    const result = data.data.data.filter((item) =>
+      item.name.includes(e.target.value.trim())
+    );
+    if (result.length > 0) {
+      setSearch(result);
+    } else {
+      setShowMessage("کالایی با این اسم پیدا نشد!");
+    }
+  };
   return (
     <>
       {addModal && <AddProductModal setAddModal={setAddModal} />}
-      {/* {edit[0] && (
-        <EditProductModal setEdit={setEdit} edit={edit} refetch={refetch} />
-      )} */}
+      {edit[0] && <EditProductModal setEdit={setEdit} edit={edit} />}
       {productDeleteModal[0] && (
         <DeleteProductModal
           productDeleteModal={productDeleteModal}
           setProductDeleteModal={setProductDeleteModal}
         />
       )}
-      <div className="flex mx-auto relative justify-center items-center rounded-2xl w-[1145px] h-[68px] bg-[#ffffff]">
+      <div className="flex mx-auto relative justify-center items-center rounded-2xl w-[1145px] h-[68px] mt-7 border  bg-[#ffffff]">
         <span className="absolute right-5">
           <img
             src="/images/search-normal.svg"
@@ -36,6 +47,7 @@ function ProductsPage() {
         <input
           type="text"
           placeholder="جستجوی کالا"
+          onChange={searchHandler}
           className="pr-14 w-full placeholder:text-[#00000099] bg-inherit outline-none"
         />
         <div className="flex border-r   border-[#E4E4E4] mr-5 px-5 gap-x-5">
@@ -71,7 +83,7 @@ function ProductsPage() {
           افزودن محصول
         </button>
       </div>
-      <div className="w-[1140px] mx-auto mt-3">
+      <div className="w-[1140px] mx-auto mt-3 border rounded-2xl mb-8">
         <div className="grid myGrid14 px-10 w-full rounded-t-2xl h-[70px] items-center bg-[#F2F2F2]">
           <span className="col-span-3 text-[#282828] font-medium text-[14px]">
             نام کالا
@@ -86,39 +98,68 @@ function ProductsPage() {
             شناسه کالا
           </span>
         </div>
-        {!isLoading && !isError
-          ? data?.data?.data.map((item) => (
-              <div
-                key={item.id}
-                className="grid myGrid14 px-10 w-full h-[70px] items-center last:rounded-b-2xl bg-[#ffffff]"
-              >
-                <span className="col-span-3 text-[#282828] font-normal text-[12px]">
-                  {item.name}
-                </span>
-                <span className="col-span-3 text-[#282828] font-normal text-[12px]">
-                  {item.quantity ? item.quantity : "---"}
-                </span>
-                <span className="col-span-3 text-[#282828] font-normal text-[12px]">
-                  {item.price}
-                </span>
-                <span className="col-span-3 text-[#282828] font-normal text-[12px]">
-                  {item.id}
-                </span>
-                <span className="col-span-2 flex text-[#282828] font-normal text-[12px] justify-end gap-x-4">
-                  <button
-                  // onClick={() => setEdit([true, item.id])}
-                  >
-                    <img src="/images/edit.svg" alt="edit icon" />
-                  </button>
-                  <button
-                    onClick={() => setProductDeleteModal([true, item.id])}
-                  >
-                    <img src="/images/trash.svg" alt="delete icon" />
-                  </button>
-                </span>
+        {data?.data.data.length ? (
+          search.length > 0 ? (
+            showMessage.length > 0 ? (
+              <div className="grid myGrid14 px-10 w-full h-[70px] items-center last:rounded-b-2xl bg-[#ffffff]">
+                <span className="col-span-full text-center">{showMessage}</span>
               </div>
+            ) : (
+              search.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                  setEdit={setEdit}
+                  setProductDeleteModal={setProductDeleteModal}
+                />
+              ))
+            )
+          ) : (
+            data?.data.data.map((item) => (
+              <ProductCard
+                key={item.id}
+                item={item}
+                setEdit={setEdit}
+                setProductDeleteModal={setProductDeleteModal}
+              />
             ))
-          : null}
+          )
+        ) : (
+          <div className="grid myGrid14 px-10 w-full h-[70px] items-center last:rounded-b-2xl bg-[#ffffff]">
+            <span className="col-span-full text-center">{showMessage}</span>
+          </div>
+        )}
+      </div>
+      <div className="w-full flex mb-5">
+        <div className="w-32 mx-auto flex justify-between">
+          <span
+            onClick={(e) => setPage(+e.target.dataset.page)}
+            data-page="1"
+            className={`w-8 h-8 cursor-pointer font-bold ${
+              page === 1 ? "pageNumAction" : "pageNum"
+            }`}
+          >
+            1
+          </span>
+          <span
+            onClick={(e) => setPage(+e.target.dataset.page)}
+            data-page="2"
+            className={`w-8 h-8 cursor-pointer font-bold ${
+              page === 2 ? "pageNumAction" : "pageNum"
+            }`}
+          >
+            2
+          </span>
+          <span
+            onClick={(e) => setPage(+e.target.dataset.page)}
+            data-page="3"
+            className={`w-8 h-8 cursor-pointer font-bold ${
+              page === 3 ? "pageNumAction" : "pageNum"
+            }`}
+          >
+            3
+          </span>
+        </div>
       </div>
     </>
   );
