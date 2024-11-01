@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useGetAllProducts } from "../services/queries";
 import AddProductModal from "../components/modalComponents/AddProductModal";
@@ -14,6 +14,17 @@ function ProductsPage() {
   const [search, setSearch] = useState([]);
   const [page, setPage] = useState(1);
   const { data } = useGetAllProducts(page);
+  const [pagination, setPagination] = useState([]);
+
+  useEffect(() => {
+    const totalItems = data?.data.totalProducts;
+    const totalPages = Math.ceil(totalItems / 10);
+    const paginationNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      paginationNumbers.push(i);
+    }
+    setPagination(paginationNumbers);
+  }, [data]);
 
   const searchHandler = (e) => {
     setShowMessage("");
@@ -26,6 +37,7 @@ function ProductsPage() {
       setShowMessage("کالایی با این اسم پیدا نشد!");
     }
   };
+
   return (
     <>
       {addModal && <AddProductModal setAddModal={setAddModal} />}
@@ -131,34 +143,19 @@ function ProductsPage() {
         )}
       </div>
       <div className="w-full flex mb-5">
-        <div className="w-32 mx-auto flex justify-between">
-          <span
-            onClick={(e) => setPage(+e.target.dataset.page)}
-            data-page="1"
-            className={`w-8 h-8 cursor-pointer font-bold ${
-              page === 1 ? "pageNumAction" : "pageNum"
-            }`}
-          >
-            1
-          </span>
-          <span
-            onClick={(e) => setPage(+e.target.dataset.page)}
-            data-page="2"
-            className={`w-8 h-8 cursor-pointer font-bold ${
-              page === 2 ? "pageNumAction" : "pageNum"
-            }`}
-          >
-            2
-          </span>
-          <span
-            onClick={(e) => setPage(+e.target.dataset.page)}
-            data-page="3"
-            className={`w-8 h-8 cursor-pointer font-bold ${
-              page === 3 ? "pageNumAction" : "pageNum"
-            }`}
-          >
-            3
-          </span>
+        <div className="w-fit mx-auto flex justify-between gap-x-3">
+          {pagination.length > 0 &&
+            pagination.map((i) => (
+              <span
+                key={i}
+                onClick={() => setPage(i)}
+                className={`w-8 h-8 cursor-pointer font-bold ${
+                  page === i ? "pageNumAction" : "pageNum"
+                }`}
+              >
+                {i}
+              </span>
+            ))}
         </div>
       </div>
     </>
